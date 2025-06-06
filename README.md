@@ -1,6 +1,6 @@
 # EuroSAT: Extracting More from Less
 
-![Collage](/generated_assets/eurosat_collage.jpeg)
+![Collage](/docs/generated_assets/eurosat_collage.jpeg)
 
 In this project I focus on how can feature extraction narrow the gap between classic **Machine Learning** algorithms and state-of-the-art **Convolutional Neural Networks** in the context of low resolution satellite images. The motivation behind this idea is to explore how environments with reduced capabilities (due to lack of budget or lower performing device hardware) can get resuslts nearly as good as high performance environments with GPUs and advanced CNNs. For this project I have chosen the EuroSAT dataset.
 
