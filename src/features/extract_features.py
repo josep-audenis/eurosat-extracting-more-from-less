@@ -1,49 +1,13 @@
+import os
 import numpy as np
 import cv2
 
 from scipy.stats import skew, kurtosis
-
 from skimage.measure import shannon_entropy
-from skimage.color import rgb2gray, rgb2hsv, rgb2lab
 from skimage.feature import graycomatrix, graycoprops, local_binary_pattern
 from skimage.filters import gabor
 
-def statisticalFeatures(image: list):
-	r"""Extracts statistical features from an image.
-
-    Parameters
-    ----------
-	image : array_like of real numbers.
-		This represents an image with three spectral bands (usually RGB).
-
-    Returns
-    -------
-    features : list of floats
-		A list containing statistical features for each spectral band.
-
-    Notes
-    -----
-	For each band (R, G, B), it includes:
-        
-           - mean
-           - median
-           - standard deviation
-           - variance
-           - sum
-           - skewness
-           - kurtosis
-           - Shannon entropy
-           - 10th percentile
-           - 25th percentile
-           - 75th percentile
-           - 90th percentile
-           - interquartile range (75th - 25th)
-           - minimum
-           - maximum
-           - range (max - min)
-
-    The final list has 3 x 16 = 48 features.
-	"""
+def extract_statistical_features(image: list):
 
 	features = []
 
@@ -74,7 +38,7 @@ def statisticalFeatures(image: list):
 
 	return features
 
-def textureFeatures(image: list, levels=256, distances=[1,2,3], angles = [0, np.pi/4, np.pi/2, 3*np.pi/4]):
+def extract_texture_features(image: list, distances=[1,2,3], angles = [0, np.pi/4, np.pi/2, 3*np.pi/4]):
 
 	features = []
 
@@ -84,7 +48,7 @@ def textureFeatures(image: list, levels=256, distances=[1,2,3], angles = [0, np.
 	for distance in distances:
 		for angle in angles:
 
-			glcm = graycomatrix(image_gray, distances=[distance], angels=[angle], levels=levels, symmetric=True, normed=True)
+			glcm = graycomatrix(image_gray, distances=[distance], angels=[angle], levels=256, symmetric=True, normed=True)
 
 			features += [
 				graycoprops(glcm, "contrast")[0, 0],
@@ -97,7 +61,7 @@ def textureFeatures(image: list, levels=256, distances=[1,2,3], angles = [0, np.
 
 	return features
 
-def lbpFeatures(image, radius=3, points=8):
+def extract_lbp_features(image, radius=3, points=8):
 
 	features = []
 
@@ -118,7 +82,7 @@ def lbpFeatures(image, radius=3, points=8):
 
 	return features
 
-def gaborFeatures(image, frequencies=[0.1, 0.3, 0.5], orientations=[0, np.pi/4, np.pi/2, 3*np.pi/4]):
+def extract_gabor_filter_features(image, frequencies=[0.1, 0.3, 0.5], orientations=[0, np.pi/4, np.pi/2, 3*np.pi/4]):
 	features = []
 
 	for channel in range(3):
@@ -140,12 +104,12 @@ def gaborFeatures(image, frequencies=[0.1, 0.3, 0.5], orientations=[0, np.pi/4, 
 
 	return features
 
-def colorSpaceFeatures(image):
+def extract_color_space_features(image):
 
 	features = []
 
 	hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-	lab = cv2.cvtColor(image, cv2.COLOR_RGB2Lab)
+	lab = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
 
 	for channel in range(3):
 		hsv_channel_data = hsv[:, :, channel]
@@ -166,21 +130,40 @@ def colorSpaceFeatures(image):
 
 	return features
 
-def extractFeatures(image):
-	r"""Extracts relevant features features from an image.
+def extract_features(path, statistical=True, texture=True, lbp=True, gabor=True, color_space=True):
+	features = []
 
-	Parameters
-	----------
-	image : 
+	image = cv2.imread(path)
 
-	Returns
-	-------
-	features : 
-	"""
-	return [
-		statisticalFeatures(image),
-		textureFeatures(image),
-		lbpFeatures(image),
-		gaborFeatures(image),
-		colorSpaceFeatures(image),
-	]
+	if statistical:
+		features += [extract_statistical_features(image)]
+	if texture:
+		features += [extract_texture_features(image)]
+	if lbp:
+		features += [extract_lbp_features(image)]
+	if gabor:
+		features += [extract_gabor_filter_features(image)]
+	if color_space:
+		features += [extract_color_space_features(image)]
+	
+	return features
+
+def generate_features_dataset(dataset_dir: str, output_file: str):
+
+	X = []
+	y = []
+
+	categories = os.listdir(dataset_dir)
+
+	for category in categories:
+		images = os.listdir(dataset_dir + category + "/")
+		for image in images:
+			path = dataset_dir + category + "/" + image
+			features = extract_features(path)
+			X.append(features)
+			y.append(category)
+
+	np.savez(output_file, X=X, y=y)
+
+if __name__ == "__main__":
+	generate_features_dataset("data/external/EuroSAT/", "data/interim/features_train.npz")
