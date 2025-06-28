@@ -12,6 +12,10 @@ def train_random_forest(X_train, y_train):
 	rfc.fit(X_train, y_train)
 	return rfc
 
+def train_xgboost(X_train, y_train):
+	return
+
+
 if __name__ == "__main__":
 	X, y = load_features("data/interim/features_train.npz")
 	X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.25, random_state=42)

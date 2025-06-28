@@ -7,7 +7,7 @@ from skimage.measure import shannon_entropy
 from skimage.feature import graycomatrix, graycoprops, local_binary_pattern
 from skimage.filters import gabor
 
-def extract_statistical_features(image: list):
+def extract_statistical_features(image):
 
 	features = []
 
@@ -38,17 +38,21 @@ def extract_statistical_features(image: list):
 
 	return features
 
-def extract_texture_features(image: list, distances=[1,2,3], angles = [0, np.pi/4, np.pi/2, 3*np.pi/4]):
+def extract_texture_glcm_features(image):
 
 	features = []
 
-	image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-	image_gray = ((image_gray - image_gray.min()) / (image_gray.max() - image_gray.min()) * (levels - 1)).astype(np.uint16)	# Normalize to 0 - (levels - 1)
+	distances = [1, 2, 3]
+	angles = [0, np.pi/4, np.pi/2, 3*np.pi/4]
+	levels = 32	
+
+	gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+	gray_quantized = ((gray.astype(np.float64) / 255.0) * (levels - 1)).astype(np.uint8)
 
 	for distance in distances:
 		for angle in angles:
 
-			glcm = graycomatrix(image_gray, distances=[distance], angels=[angle], levels=256, symmetric=True, normed=True)
+			glcm = graycomatrix(gray_quantized, distances=[distance], angles=[angle], levels=256, symmetric=True, normed=True)
 
 			features += [
 				graycoprops(glcm, "contrast")[0, 0],
@@ -61,6 +65,37 @@ def extract_texture_features(image: list, distances=[1,2,3], angles = [0, np.pi/
 
 	return features
 
+
+def extract_texture_measure_features(image):
+
+	features = []
+
+	gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+	features += [
+		np.var(gray.astype(np.float64)),
+		np.std(gray.astype(np.float64))
+	]	
+
+	kernel = np.ones((3, 3))
+	local_mean = cv2.filter2D(gray.astype(np.float64), - 1, kernel/9)
+	local_std = np.sqrt(cv2.filter2D((gray.astype(np.float64) - local_mean)**2, -1, kernel/9))
+	
+	features += [
+		np.mean(local_std),
+		np.std(local_std),
+		np.max(local_std),
+		np.min(local_std)
+	]
+
+	features += [
+		np.max(gray) - np.min(gray),
+		shannon_entropy(gray)
+	]
+
+	return features
+
+
 def extract_lbp_features(image, radius=3, points=8):
 
 	features = []
@@ -68,8 +103,8 @@ def extract_lbp_features(image, radius=3, points=8):
 	n_points = points * radius
 
 	for channel in range(3):
-		ch_data = image[:, :, channel]
 
+		ch_data = image[:, :, channel]
 		lbp = local_binary_pattern(ch_data, n_points, radius, method="uniform")
 		hist, _ = np.histogram(lbp.ravel(), bins=n_points + 2, range=(0, n_points + 2))
 
@@ -82,15 +117,16 @@ def extract_lbp_features(image, radius=3, points=8):
 
 	return features
 
+
 def extract_gabor_filter_features(image, frequencies=[0.1, 0.3, 0.5], orientations=[0, np.pi/4, np.pi/2, 3*np.pi/4]):
 	features = []
 
 	for channel in range(3):
 		channel_data = image[:, :, channel]
-
 		for frequency in frequencies:
 			for theta in orientations:
 
+				# Garbor filter
 				real, _ = gabor(channel_data, frequency=frequency, theta=theta)
 
 				features += [
@@ -103,6 +139,7 @@ def extract_gabor_filter_features(image, frequencies=[0.1, 0.3, 0.5], orientatio
 				]
 
 	return features
+
 
 def extract_color_space_features(image):
 
@@ -130,23 +167,158 @@ def extract_color_space_features(image):
 
 	return features
 
-def extract_features(path, statistical=True, texture=True, lbp=True, gabor=True, color_space=True):
+
+def extract_spectral_features(image):
+	features = []
+
+	r_band = image[:, :, 0]
+	g_band = image[:, :, 1]
+	b_band = image[:, :, 2]
+
+	epsilon = 1e-8	# Avoid division by 0
+
+	# Band ratios
+	features += [
+		np.mean(r_band / (g_band + epsilon)),
+		np.mean(g_band / (b_band + epsilon)),
+		np.mean(r_band / (b_band + epsilon)),
+		np.mean((g_band - r_band) / (g_band + r_band + epsilon)),
+		np.mean((r_band + g_band + b_band) / 3) 
+	]
+
+	features += [
+		np.std(r_band / (g_band + epsilon)),
+		np.std(g_band / (b_band + epsilon)),
+		np.std(r_band / (b_band + epsilon))
+	]
+
+	return features
+
+
+def extract_edge_features(image):
+	features = []
+
+	gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+	# Sobel edge
+	sobel_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+	sobel_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+	sobel_mag = np.sqrt(sobel_x**2 + sobel_y**2)
+
+	features += [
+		np.mean(sobel_mag),
+		np.std(sobel_mag),
+		np.var(sobel_mag),
+		np.sum(sobel_mag > np.percentile(sobel_mag, 90))	# Strong edges count
+	]
+
+	# Canny edges
+	canny = cv2.Canny(gray.astype(np.uint8), 50, 150)
+
+	features += [
+		np.sum(canny > 0) / canny.size,	# Edge density
+		np.mean(canny),
+		np.std(canny),
+		np.var(canny)
+	]
+
+	# Laplacian
+	laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+
+	features += [
+		np.mean(np.abs(laplacian)),
+		np.std(laplacian),
+		np.var(laplacian)
+	]
+
+	return features
+
+
+def extract_morphological_features(image):
+	features = []
+
+	gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+	_, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+	kernel = np.ones((3,3), np.uint8)	# Morphological operations
+	opening = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+	closing = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+
+	features += [
+		np.sum(opening > 0) / opening.size,
+		np.sum(closing > 0) / closing.size,
+		np.mean(opening),
+		np.mean(closing),
+		np.std(opening),
+		np.std(closing)
+	]
+
+	gradient = cv2.morphologyEx(binary, cv2.MORPH_GRADIENT, kernel)
+
+	features += [
+		np.sum(gradient > 0) / gradient.size,
+		np.mean(gradient),
+		np.std(gradient)
+	]
+
+	return features
+
+
+def extract_frequency_features(image):
+	features = []
+
+	for channel in range(3):
+
+		channel_data = image[:, :, channel]
+		fft = np.fft.fft2(channel_data)	# Fast Fourier Transform
+		fft_shift = np.fft.fftshift(fft)
+		magnitude = np.abs(fft_shift)
+
+		# Frequency domain statistics
+		features += [
+			np.mean(magnitude),
+			np.std(magnitude),
+			np.var(magnitude),
+			np.max(magnitude),
+			np.sum(magnitude > np.percentile(magnitude, 95))
+		]
+
+		psd = magnitude**2	# Power spectral density
+
+		features += [
+			np.mean(psd),
+			np.std(psd),
+			np.sum(psd) / psd.size
+		]
+
+	return features
+
+
+
+def extract_features(path, statistical=True, texture_glcm=True, texture_measure=True, lbp=True, gabor=True, color_space=True, spectral_features=True, edge_features=True, morphological=True):
 	features = []
 
 	image = cv2.imread(path)
 
 	if statistical:
-		features += [extract_statistical_features(image)]
-	if texture:
-		features += [extract_texture_features(image)]
+		features += extract_statistical_features(image)
+	if texture_glcm:
+		features += extract_texture_glcm_features(image)
+	if texture_measure:
+		features += extract_texture_measure_features(image)
 	if lbp:
-		features += [extract_lbp_features(image)]
+		features += extract_lbp_features(image)
 	if gabor:
-		features += [extract_gabor_filter_features(image)]
+		features += extract_gabor_filter_features(image)
 	if color_space:
-		features += [extract_color_space_features(image)]
+		features += extract_color_space_features(image)
+	if spectral_features:
+		features += extract_spectral_features(image)
+	if edge_features:
+		features += extract_edge_features(image)
+	if morphological:
+		features += extract_morphological_features(image)
 	
-	return features
+	return features	
 
 def generate_features_dataset(dataset_dir: str, output_file: str):
 
@@ -158,12 +330,14 @@ def generate_features_dataset(dataset_dir: str, output_file: str):
 	for category in categories:
 		images = os.listdir(dataset_dir + category + "/")
 		for image in images:
+			
 			path = dataset_dir + category + "/" + image
 			features = extract_features(path)
 			X.append(features)
 			y.append(category)
 
 	np.savez(output_file, X=X, y=y)
+
 
 if __name__ == "__main__":
 	generate_features_dataset("data/external/EuroSAT/", "data/interim/features_train.npz")
