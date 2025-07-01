@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage[a4paper, margin=0.8in]{geometry}
+\usepackage{times}
+
+\usepackage{indentfirst}
+\setlength{\parindent}{5mm}
+\setlength{\parskip}{2mm}
+
+\usepackage{graphicx} 
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage[toc, acronym]{glossaries}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{lettrine}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\titlespacing*{\section}
+  {0pt}    
+  {3.5ex}  
+  {2ex}  
+
+\titlespacing*{\subsection}
+  {0pt}    
+  {2ex}  
+  {1ex}
+
+\usepackage[skip=8pt plus1pt, indent=20pt]{parskip}
+
+\usepackage[
+backend=biber,
+style=ieee,
+]{biblatex}
+\addbibresource{references.bib}
+\setcounter{biburlnumpenalty}{9000}
+% \defbibheading{bibliography}[\refname]{\section*{References}}
+
+\usepackage{fancyhdr}
+% \pagestyle{fancy} 
+\fancyfoot[C]{\thepage}
+
+\renewcommand\thesection{\Roman{section}}
+\renewcommand\thesubsection{\Alph{subsection}.}
+
+\renewcommand{\maketitle}{
+  \begin{center}
+    {\huge \bfseries EuroSAT: Extracting more from less \par}
+    \vskip 0.75em    
+    \begin{tabularx}{\textwidth}{XXXX}
+      \centering
+      \begin{minipage}[t]{\linewidth}
+        \centering
+        \textbf{Josep Audenis Ros}\\
+        Independent researcher\\\textit{\href{mailto:}{mail???}}
+      \end{minipage}
+    \end{tabularx}
+  \end{center}
+  \vspace{2em}
+}
+
+\begin{document}
+
+\maketitle
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\begin{abstract}
+
+\end{abstract}
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\begin{multicols}{2}
+
+\end{multicols}
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\printbibliography
+
+\end{document}

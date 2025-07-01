@@ -320,6 +320,7 @@ def extract_features(path, statistical=True, texture_glcm=True, texture_measure=
 	
 	return features	
 
+
 def generate_features_dataset(dataset_dir: str, output_file: str):
 
 	X = []
