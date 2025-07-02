@@ -1,1 +1,6 @@
 opencv-python >= 4.11
+numpy >= 2.3.1
+joblib >= 1.5.1
+scikit-learn >= 1.7
+scikit-image >= 0.25
+scipy >= 1.16
