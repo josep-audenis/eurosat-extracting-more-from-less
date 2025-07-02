@@ -321,10 +321,27 @@ def extract_features(path, statistical=True, texture_glcm=True, texture_measure=
 	return features	
 
 
-def generate_features_dataset(dataset_dir: str, output_file: str):
+def generate_features_dataset(output_filename="features_train"):
 
 	X = []
 	y = []
+
+	print("=== Feature selection ===")
+	features_config = {
+		"statistical": input("Use statistical features? (y/n): ").lower() == 'y',
+		"texture_glcm": input("Use GLCM texture features? (y/n): ").lower() == 'y',
+		"texture_measure": input("Use texture measure features? (y/n): ").lower() == 'y',
+		"lbp": input("Use LBP features? (y/n): ").lower() == 'y',
+		"gabor": input("Use Gabor features? (y/n): ").lower() == 'y',
+		"color_space": input("Use color space features? (y/n): ").lower() == 'y',
+		"spectral_features": input("Use spectral features? (y/n): ").lower() == 'y',
+		"edge_features": input("Use edge features? (y/n): ").lower() == 'y',
+		"morphological": input("Use morphological features? (y/n): ").lower() == 'y'
+	}
+
+	dataset_dir = "/data/external/EuroSAT/"
+
+	output_file = "/data/interim/" + output_filename + ".npz"
 
 	categories = os.listdir(dataset_dir)
 
