@@ -31,6 +31,10 @@ def train_classic():
 	selected_file = input("Option: ")
 	
 	X, y = load_features("/data/interim/" + selected_file)
+	
+	model_filename = None
+	while model_filename is None:
+		model_filename = input("Specifiy the output filename (without extension) of the trained model, it will be stored in the /models/ folder: ")
 
 	model = None
 	while model is None:

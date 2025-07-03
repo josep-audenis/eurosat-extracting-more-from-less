@@ -1,8 +1,7 @@
 import argparse
-import sys
 
-from models import train_classical
-from features import generate_features_dataset
+from models.train_classical_models import train_classic 
+from features.extract_features import generate_features_dataset
 
 def main():
 	parser = argparse.ArgumentParser(prog="EuroSAT classifier")
@@ -11,13 +10,13 @@ def main():
 
 	args = parser.parse_args()
 
-	if args.train == ['classic']:
-		train_classical()
+	if args.extract:
+		generate_features_dataset()
+	elif args.train == ['classic']:
+		train_classic()
 	elif args.train == ["nerual network"]:
 		print("train nn")
-	elif len(args.extract) > 0:
-		generate_features_dataset()
-	else:	
+	else:
 		parser.print_usage()
 
 if __name__ == "__main__":

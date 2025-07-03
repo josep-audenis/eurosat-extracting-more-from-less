@@ -326,17 +326,19 @@ def generate_features_dataset(output_filename="features_train"):
 	X = []
 	y = []
 
+	affirmative = ['y', '']
+
 	print("=== Feature selection ===")
 	features_config = {
-		"statistical": input("Use statistical features? (y/n): ").lower() == 'y',
-		"texture_glcm": input("Use GLCM texture features? (y/n): ").lower() == 'y',
-		"texture_measure": input("Use texture measure features? (y/n): ").lower() == 'y',
-		"lbp": input("Use LBP features? (y/n): ").lower() == 'y',
-		"gabor": input("Use Gabor features? (y/n): ").lower() == 'y',
-		"color_space": input("Use color space features? (y/n): ").lower() == 'y',
-		"spectral_features": input("Use spectral features? (y/n): ").lower() == 'y',
-		"edge_features": input("Use edge features? (y/n): ").lower() == 'y',
-		"morphological": input("Use morphological features? (y/n): ").lower() == 'y'
+		"statistical": input("Use statistical features? (y (default)/n): ").lower() in affirmative,
+		"texture_glcm": input("Use GLCM texture features? (y (default)/n): ").lower() in affirmative,
+		"texture_measure": input("Use texture measure features? (y (default)/n): ").lower() in affirmative,
+		"lbp": input("Use LBP features? (y (default)/n): ").lower() in affirmative,
+		"gabor": input("Use Gabor features? (y (default)/n): ").lower() in affirmative,
+		"color_space": input("Use color space features? (y (default)/n): ").lower() in affirmative,
+		"spectral_features": input("Use spectral features? (y (default)/n): ").lower() in affirmative,
+		"edge_features": input("Use edge features? (y (default)/n): ").lower() in affirmative,
+		"morphological": input("Use morphological features? (y (default)/n): ").lower() in affirmative
 	}
 
 	dataset_dir = "/data/external/EuroSAT/"
@@ -350,7 +352,16 @@ def generate_features_dataset(output_filename="features_train"):
 		for image in images:
 			
 			path = dataset_dir + category + "/" + image
-			features = extract_features(path)
+			features = extract_features(path, 
+							   features_config["statistical"], 
+							   features_config["texture_glcm"], 
+							   features_config["texture_measure"],
+							   features_config["lbp"],
+							   features_config["gabor"],
+							   features_config["color_space"],
+							   features_config["spectral_features"],
+							   features_config["edge_features"],
+							   features_config["morphological"])
 			X.append(features)
 			y.append(category)
 
@@ -358,4 +369,4 @@ def generate_features_dataset(output_filename="features_train"):
 
 
 if __name__ == "__main__":
-	generate_features_dataset("data/external/EuroSAT/", "data/interim/features_train.npz")
+	generate_features_dataset("features_train")
