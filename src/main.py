@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from models.train_classical_models import train_classic 
 from features.extract_features import generate_features_dataset
@@ -10,12 +11,14 @@ def main():
     
     args = parser.parse_args()
     
+    print(os.listdir("./data"))
+
     if args.extract:
-	    generate_features_dataset()
+        generate_features_dataset()
     elif args.train:
-	    train_classic()
+        train_classic()
     else:
         parser.print_usage()
 
 if __name__ == "__main__":
-	main()
+    main()
