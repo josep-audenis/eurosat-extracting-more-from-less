@@ -347,13 +347,13 @@ def generate_features_dataset(output_filename="features_train"):
     output_file = "./data/interim/" + output_filename + ".npz"
 
     categories = os.listdir(dataset_dir)
+    
+    print("\n=== Extraction progress ===\n")
 
     for category in categories:
         images = os.listdir(dataset_dir + category + "/")
         images_size = len(images)
-        sys.stdout.write(f"\n\r{category.capitalize} ")
         for i, image in enumerate(images):
-            
             path = dataset_dir + category + "/" + image
             features = extract_features(path, 
                                features_config["statistical"], 
@@ -368,11 +368,11 @@ def generate_features_dataset(output_filename="features_train"):
             X.append(features)
             y.append(category)
             percent = 100 * ((i+1) / images_size)
-            filled_length = int(20 * progress // images_size)
+            filled_length = int(20 * (i+1) // images_size)
             bar = '█' * filled_length + '-' * (20 - filled_length)
+            sys.stdout.write(f"\r{category.capitalize()} |{bar}| {percent:.2f}%")
             sys.stdout.flush()
-            sys.stdout.write(f"\t{category.capitalize()} |{bar}| {percent: .2f}%")
-
+        print()
 
     np.savez(output_file, X=X, y=y)
 

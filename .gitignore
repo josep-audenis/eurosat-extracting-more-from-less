@@ -1,3 +1,4 @@
 /data/external/EuroSAT/
+/data/interim/*
 __pycache__
 EuroSAT/
