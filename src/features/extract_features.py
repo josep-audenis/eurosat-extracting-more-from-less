@@ -373,8 +373,13 @@ def generate_features_dataset(output_filename="features_train"):
             sys.stdout.write(f"\r{category.capitalize()} |{bar}| {percent:.2f}%")
             sys.stdout.flush()
         print()
-
-    np.savez(output_file, X=X, y=y)
+    
+    if cv != 0:
+        
+    elif train_ratio < 100:
+        
+    else:
+        np.savez(output_file, X=X, y=y)
 
 
 if __name__ == "__main__":

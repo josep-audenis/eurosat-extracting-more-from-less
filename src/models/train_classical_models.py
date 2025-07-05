@@ -16,36 +16,23 @@ def train_random_forest(X_train, y_train):
 def train_xgboost(X_train, y_train):
     return
 
-def train_classic():
+def train_classic(model="random_forest", train_ratio=None, cross_validation=None, dataset=None, model_filename="random_forest_model"):
     
-    train_files = os.listdir("/data/interim/")
-
-    if (len(train_files) == 0):
-        print("There are no feature files created, please extract features with the flag -e/--extract.")
+    if dataset is None:
+        print("Error in train_classic: dataset field is None")
         return
     
-    print("Select a features file")
-    for i, file in enumerate(train_files):
-        print(f"\t{i + 1} - {file}")
-    
-    selected_file = input("Option: ")
-    
-    X, y = load_features("/data/interim/" + selected_file)
-    
-    model_filename = None
-    while model_filename is None:
-        model_filename = input("Specifiy the output filename (without extension) of the trained model, it will be stored in the /models/ folder: ")
+    dataset_filename = dataset + ".npz"
 
-    model = None
-    while model is None:
-        option = input("\nWith which model do you want to train?\n\t1. Random Forest\n\t2. XGBoost\nOption: ")
-        if option == '1':
-            model = train_random_forest()
-            
-        elif option == '2':
-            model = train_xgboost()
-        else:
-            print("Wrong option!")
+    if dataset_filename not in os.listfiles("/data/interim/"):
+        print(f"Error in train_classic: dataset file {dataset_filename} not found.")
+        return
+    
+    X, y = load_features("/data/interim/" + dataset_filename)
+    
+    if cross_validation is not None: # cross_validation
+
+    else:
 
     
 
