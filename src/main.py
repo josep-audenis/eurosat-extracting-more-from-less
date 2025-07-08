@@ -6,9 +6,9 @@ from features.extract_features import generate_features_dataset
 
 def main():
     parser = argparse.ArgumentParser(prog="EuroSAT classifier")
-    parser.add_argument("-t", "--train", type=str, help="Trains a classical model on the specified dataset.")
-    parser.add_argument("-e", "--extract", type=str, help="Extracts specified featyres from the image dataset.")
-    parser.add_argument("-c", "--check", type=str, help="Checks for dataset features statistics.")
+    parser.add_argument("-t", "--train", action="store_true",help="Trains a classical model on the specified dataset.")
+    parser.add_argument("-e", "--extract", action="store_true", help="Extracts specified featyres from the image dataset.")
+    parser.add_argument("-c", "--check", help="Checks for dataset features statistics.")
     #pasrer.add_argument("-p", "--predict", type=str, help="Predict on a new image. Specify the path to the image.", nargs=1)
     parser.add_argument("-m", "--model", type=str, choices=["random_forest", "xgboost", "resnet50"], help="Specify the model to use for training or prediction.", nargs=1)
     parser.add_argument("-ld", "--load-dataset", type=str, help="Name of the dataset to load. It must be stored in the /data/interim/ folder.", nargs=1)
@@ -17,7 +17,7 @@ def main():
     parser.add_argument("-lm", "--load-model", type=str, help="Name of the trained model to load. It must be stored in the /models/ folder.", nargs=1)
     parser.add_argument("-r", "--report", action="store_true", help="Generates and saves a classification report.")
     parser.add_argument("-v", "--visualize", action="store_true", help="Visualize samples, predictions or feature distributions.")
-    parser.add_argument("-eval", "--evaluate", type="str", help="Evaluates an existing trained model on a specified dataset.")
+    parser.add_argument("-eval", "--evaluate", type=str, help="Evaluates an existing trained model on a specified dataset.")
     parser.add_argument("-sr", "--split-ratio", type=int, help="Indicates the % of the dataset dedicated to training, the rest to test.", nargs=1)
     parser.add_argument("-cv", "--cross-validation", type=int, help="Indicates the number of folds for cross-validation", nargs=1)
     parser.add_argument("-s", "--seed", type=int, help="Seed to fix a random state.", nargs=1)
@@ -28,11 +28,11 @@ def main():
         if not args.save_dataset:
             parser.error("--extract requires --save-dataset to be specified.")
         else:
-            if args.cross_validation:
+            #if args.cross_validation:
             
-            elif args.split_ratio:
+            #elif args.split_ratio:
             
-            else:
+            #else:
 
             print("extract")
 
@@ -51,7 +51,7 @@ def main():
                         # train_classic(model=args.model, train_ratio=args.split_ratio, dataset=args.load_dataset, model_filename=args.save_model)
                     elif args.cross_validation:
                         print("train_cross_val")
-                        # train_classic(model=args.model, cv=args.cross_validation, dataset=args.load_dataset)
+                        train_classic(model_name=args.model, cross_validation=args.cross_validation, dataset=args.load_dataset)
                     else:
                         parser.error("Choose either --split-ratio or --cross-validation.")
             else:
@@ -75,7 +75,7 @@ def main():
         #else:
             #parser.error("--predict requires --load-model to be specified.")
     
-    if not args.extract and not args.train and noto args.check and not args.evaluate:
+    if not args.extract and not args.train and not args.check and not args.evaluate:
         parser.print_usage()
 
 if __name__ == "__main__":

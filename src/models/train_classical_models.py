@@ -4,6 +4,8 @@ from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
+from validations.cross_validation import cross_validate_model
+
 def load_features(feature_file):
     data = np.load(feature_file)
     return data['X'], data['y']
@@ -16,23 +18,33 @@ def train_random_forest(X_train, y_train):
 def train_xgboost(X_train, y_train):
     return
 
-def train_classic(model="random_forest", train_ratio=None, cross_validation=None, dataset=None, model_filename="random_forest_model"):
+def train_classic(model_name="random_forest", train_ratio=None, cross_validation=None, dataset=None, model_filename="random_forest_model"):
     
     if dataset is None:
         print("Error in train_classic: dataset field is None")
         return
     
-    dataset_filename = dataset + ".npz"
+    dataset_filename = dataset[0] + ".npz"
 
-    if dataset_filename not in os.listfiles("/data/interim/"):
+    if dataset_filename not in os.listdir("./data/interim/"):
         print(f"Error in train_classic: dataset file {dataset_filename} not found.")
         return
     
-    X, y = load_features("/data/interim/" + dataset_filename)
+    X, y = load_features("./data/interim/" + dataset_filename)
     
     if cross_validation is not None: # cross_validation
+        if model_name[0] == "random_forest":
+            model = RandomForestClassifier(n_estimators=100, random_state=42)
+            results = cross_validate_model(X, y, model, n_splits=cross_validation[0], random_seed=42, visualize=True)
+        #elif model_name == "xgboost":
+        else:
+            print(f"Model {model_name[0]} not supported. Try random_forest or xgboost instead.")
 
-    else:
+    #else:
+        #dump(model, "./models/" + model_filename + ".joblib")
+    
+    return
+
 
     
 
