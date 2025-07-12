@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[a4paper, margin=1in]{geometry}
+
+
+\begin{document}
+
+\begin{center}
+  \huge \bfseries EuroSAT Cross Validation Report \par
+\end{center}
+
+\vskip 2em
+
+\section*{Experiment Summary}
+\textbf{Datetime:} {{DATE}} \\
+\textbf{Model:} {{MODEL}} \\
+\textbf{Cross-Validation:} {{FOLDS}}-fold \\
+
+\section*{Performance Metrics}
+
+\begin{center}
+  \begin{tabular}{lcc}
+    \hline
+    \textbf{Metric} & \textbf{Mean (\%)} & \textbf{Std (\%)} \\
+    \hline
+    Accuracy & {{ACC_MEAN}} & {{ACC_STD}} \\
+    Precision (Macro) & {{PREC_MEAN}} & {{PREC_STD}} \\
+    Recall (Macro) & {{REC_MEAN}} & {{REC_STD}} \\
+    F1 Score (Macro) & {{F1_MEAN}} & {{F1_STD}} \\
+    \hline
+  \end{tabular}
+  \captionof{table}{Agregated performance metrics}
+\end{center}
+
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\vskip 2em
+
+{{FOLD_SECTIONS}}
+
+\newpage
+
+%\section*{Confusion Matrix}
+
+%\includegraphics[width=0.8\textwidth]{confusion_matrix.png}
+
+%\section*{Feature Importance}
+
+%\includegraphics[width=0.8\textwidth]{feature_importance.png}
+
+\end{document}
