@@ -64,7 +64,7 @@ def cross_validate_model(X ,y, model, n_splits=5, random_seed=42):
     print(f"Accuracy: {results['accuracy_mean']*100:.2f}% ± {results['accuracy_std']*100:.2f}%")
     print(f"Precision (Macro): {results['precision_mean']*100:.2f}% ± {results['precision_std']*100:.2f}%")
     print(f"Recall (Macro): {results['recall_mean']*100:.2f}% ± {results['recall_std']*100:.2f}%")
-    print(f"F1 Score (Macro): {results['f1_mean']*100:.2f}% ± {results['f1_std']*100:.2f}%")
+    print(f"F1 Score (Macro): {results['f1_mean']*100:.2f}% ± {results['f1_std']*100:.2f}%\n")
     
 
     return results, fold_metrics

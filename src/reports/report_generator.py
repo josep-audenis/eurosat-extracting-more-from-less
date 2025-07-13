@@ -12,7 +12,7 @@ def generate_cross_validation_report(results, model_name, fold_metrics=[]):
 
     today = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     
-    report_path = "./docs/reports/cross_validation/cross_validation_report_" + datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
+    report_path = "./docs/reports/cross_validation/cross_validation_report_" + datetime.datetime.now().strftime("%Y-%m-%d_%Hh-%Mm")
     
     n_folds = len(fold_metrics)
 
@@ -97,7 +97,6 @@ def generate_kfolds_tables(results, n_folds):
         fold_sections += "\\begin{tabularx}{\\textwidth}{XX}\n"
 
     for i, fold_result in enumerate(results, 1):
-        print(fold_result['confusion_matrix'])
         
         if total > 1 and in_row == 0 and i == total:
             fold_sections += "\n\\end{tabularx}"
@@ -132,7 +131,7 @@ def generate_kfolds_tables(results, n_folds):
         elif in_row == 1:
             fold_sections += ""
         elif in_row == 2:
-            fold_sections += "\\end{tabularx}"
+            fold_sections += "\\end{minipage}\n\\end{tabularx}"
 
     if total % 2 == 1:
         fold_sections += "\n\\vspace{1em}\n"
@@ -179,7 +178,7 @@ def generate_confusion_matrix_section(filenames):   # TODO should change it the 
         elif in_row == 1:
             section += ""
         elif in_row == 2:
-            section += "\\end{tabularx}\n"
+            section += "\\end{minipage}\n\\end{tabularx}\n"
 
     if total % 2 == 1:
         section += "\n\\vspace{1em}\n"
@@ -195,6 +194,7 @@ def save_confusion_matrices_from_folds(fold_metrics, labels, output_dir="./docs/
         cm = fold["confusion_matrix"]
         filename = f"{output_dir}conf_matrix_fold{i}.png"
         generate_confusion_matrix(cm, labels, filename)
+        filename = f"../figures/conf_matrix_fold{i}.png"
         filenames.append(filename)
     
     return filenames
@@ -203,7 +203,7 @@ def save_confusion_matrices_from_folds(fold_metrics, labels, output_dir="./docs/
 
 def generate_confusion_matrix(confusion_matrix, labels, filepath):
     plt.figure(figsize=(8,6))
-    sns.heatmap(confusion_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=labels, yticklabels=labels)
+    sns.heatmap(confusion_matrix, annot=True, fmt="d", cmap="rocket", xticklabels=labels, yticklabels=labels)
     plt.ylabel("True")
     plt.xlabel("Predicted")
     #plt.title("Confussion_matrix")
