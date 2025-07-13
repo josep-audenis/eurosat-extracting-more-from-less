@@ -16,7 +16,6 @@ def main():
     parser.add_argument("-sm", "--save-model", type=str, help="Name to save the trained model. It will be stored in the /models/ folder.", nargs=1)
     parser.add_argument("-lm", "--load-model", type=str, help="Name of the trained model to load. It must be stored in the /models/ folder.", nargs=1)
     parser.add_argument("-r", "--report", action="store_true", help="Generates and saves a classification report.")
-    parser.add_argument("-v", "--visualize", action="store_true", help="Visualize samples, predictions or feature distributions.")
     parser.add_argument("-eval", "--evaluate", type=str, help="Evaluates an existing trained model on a specified dataset.")
     parser.add_argument("-sr", "--split-ratio", type=int, help="Indicates the % of the dataset dedicated to training, the rest to test.", nargs=1)
     parser.add_argument("-cv", "--cross-validation", type=int, help="Indicates the number of folds for cross-validation", nargs=1)

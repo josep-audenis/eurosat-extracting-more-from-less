@@ -5,6 +5,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
 from validations.cross_validation import cross_validate_model
+from reports.report_generator import generate_cross_validation_report
+
 
 def load_features(feature_file):
     data = np.load(feature_file)
@@ -35,7 +37,8 @@ def train_classic(model_name="random_forest", train_ratio=None, cross_validation
     if cross_validation is not None: # cross_validation
         if model_name[0] == "random_forest":
             model = RandomForestClassifier(n_estimators=100, random_state=42)
-            results = cross_validate_model(X, y, model, n_splits=cross_validation[0], random_seed=42, visualize=True)
+            results, fold_metrics = cross_validate_model(X, y, model, n_splits=cross_validation[0], random_seed=42)
+            generate_cross_validation_report(results=results, model_name="Random Forest", fold_metrics=fold_metrics)
         #elif model_name == "xgboost":
         else:
             print(f"Model {model_name[0]} not supported. Try random_forest or xgboost instead.")

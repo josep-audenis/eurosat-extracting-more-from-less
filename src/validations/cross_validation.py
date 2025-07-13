@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def cross_validate_model(X ,y, model, n_splits=5, random_seed=42, visualize=False):
+def cross_validate_model(X ,y, model, n_splits=5, random_seed=42):
     
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_seed)
 
@@ -14,6 +14,8 @@ def cross_validate_model(X ,y, model, n_splits=5, random_seed=42, visualize=Fals
     recalls = []
     f1s = []
     confusion_matrices = []
+
+    fold_metrics = []
 
     fold = 1
     
@@ -35,8 +37,16 @@ def cross_validate_model(X ,y, model, n_splits=5, random_seed=42, visualize=Fals
         recalls.append(recall)
         f1s.append(f1)
         confusion_matrices.append(conf_matrix)
+        
+        fold_metrics.append({
+            "accuracy": accuracy,
+            "precision": precision,
+            "recall": recall,
+            "f1": f1,
+            "confusion_matrix": conf_matrix
+        })
 
-        print(f"Fold {fold}:\n\tAccuracy={accuracy:.2f}\n\tPrecision={precision:.2f}\n\tRecall={recall:.2f}\n\tF1={f1:.2f}\n")
+        print(f"Fold {fold}:\n\tAccuracy={accuracy*100:.2f}%\n\tPrecision={precision*100:.2f}%\n\tRecall={recall*100:.2f}%\n\tF1={f1*100:.2f}%\n")
         fold += 1
     
     results = {
@@ -56,6 +66,5 @@ def cross_validate_model(X ,y, model, n_splits=5, random_seed=42, visualize=Fals
     print(f"Recall (Macro): {results['recall_mean']*100:.2f}% ± {results['recall_std']*100:.2f}%")
     print(f"F1 Score (Macro): {results['f1_mean']*100:.2f}% ± {results['f1_std']*100:.2f}%")
     
-    # Visualize confusion matrix???
 
-    return
+    return results, fold_metrics
