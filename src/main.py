@@ -27,13 +27,7 @@ def main():
         if not args.save_dataset:
             parser.error("--extract requires --save-dataset to be specified.")
         else:
-            #if args.cross_validation:
-            
-            #elif args.split_ratio:
-            
-            #else:
-
-            print("extract")
+            generate_features_dataset(args.save_dataset[0])
 
     if args.train:
         if args.model and args.load_dataset:

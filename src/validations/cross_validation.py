@@ -1,5 +1,6 @@
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.inspection import permutation_importance
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,25 +26,32 @@ def cross_validate_model(X ,y, model, n_splits=5, random_seed=42):
 
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
+        # permutation = permutation_importance(model, X_test, y_test, n_repeats=10, random_state=random_seed, scoring="accuracy")
 
         accuracy = accuracy_score(y_test, y_pred)
         precision = precision_score(y_test, y_pred, average="macro", zero_division=0)
         recall = recall_score(y_test, y_pred, average="macro", zero_division=0)
         f1 = f1_score(y_test, y_pred, average="macro", zero_division=0)
         conf_matrix = confusion_matrix(y_test, y_pred)
+        #importances = permutation.importances_mean
+        
+        print(f"\n{len(X_train[0])}")
 
         accuracies.append(accuracy)
         precisions.append(precision)
         recalls.append(recall)
         f1s.append(f1)
         confusion_matrices.append(conf_matrix)
+
+        #print(f"\nImportances:\n{importances}\n")
         
         fold_metrics.append({
             "accuracy": accuracy,
             "precision": precision,
             "recall": recall,
             "f1": f1,
-            "confusion_matrix": conf_matrix
+            "confusion_matrix": conf_matrix,
+            #"feature_importance": importances
         })
 
         print(f"Fold {fold}:\n\tAccuracy={accuracy*100:.2f}%\n\tPrecision={precision*100:.2f}%\n\tRecall={recall*100:.2f}%\n\tF1={f1*100:.2f}%\n")

@@ -18,4 +18,12 @@ apt install texlive-latex-base
 
 ## Execution
 
+Extraction
+```bash
+python src/main.py -e -sd features_train_mask
+```
 
+Cross Validation
+```bash
+python src/main.py -t -m random_forest -cv 2 -ld features_train
+```

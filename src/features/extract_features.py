@@ -374,9 +374,24 @@ def generate_features_dataset(output_filename="features_train"):
             sys.stdout.flush()
         print()
 
-        
-    #else:
-        np.savez(output_file, X=X, y=y)
+    X, mask = remove_nonovariant_features(X)
+    np.savez(output_file, X=X, y=y)
+
+
+
+def remove_nonovariant_features(X):
+    X = np.array(X)
+    variances = np.var(X, axis=0)
+    mask = variances > 1e-10
+    removed = len(mask) - np.sum(mask)
+    
+    if removed > 0:
+        print(f"\nRemoved {removed} constant or near-constant feautres.")
+    else:
+        print("\nNo constant or near-constant features detected")
+    
+    return X[:, mask], mask
+
 
 
 if __name__ == "__main__":

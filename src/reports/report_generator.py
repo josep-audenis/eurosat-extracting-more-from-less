@@ -140,7 +140,7 @@ def generate_kfolds_tables(results, n_folds):
 
 
 
-def generate_confusion_matrix_section(filenames):   # TODO should change it the filenames variable in the function call
+def generate_confusion_matrix_section(filenames):
     section = ""
 
     total = len(filenames)
