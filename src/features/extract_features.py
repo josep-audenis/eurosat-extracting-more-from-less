@@ -7,6 +7,9 @@ from scipy.stats import skew, kurtosis
 from skimage.measure import shannon_entropy
 from skimage.feature import graycomatrix, graycoprops, local_binary_pattern
 from skimage.filters import gabor
+from sklearn.feature_selection import mutual_info_classif
+
+from config import CONFIG
 
 def extract_statistical_features(image):
 
@@ -373,16 +376,18 @@ def generate_features_dataset(output_filename="features_train"):
             sys.stdout.write(f"\r{category.capitalize()} |{bar}| {percent:.2f}%")
             sys.stdout.flush()
         print()
-
+    
+    print(f"Total features before cleaning: {len(X[0])}")
     X, mask = remove_nonovariant_features(X)
+    X, mask_mutualinfo = select_features_mutual_info(X,y)
     np.savez(output_file, X=X, y=y)
-
+    print(f"Total features: {len(X[0])}")
 
 
 def remove_nonovariant_features(X):
     X = np.array(X)
     variances = np.var(X, axis=0)
-    mask = variances > 1e-10
+    mask = variances > CONFIG["remove_variance_threshold"]
     removed = len(mask) - np.sum(mask)
     
     if removed > 0:
@@ -392,6 +397,19 @@ def remove_nonovariant_features(X):
     
     return X[:, mask], mask
 
+
+def select_features_mutual_info(X, y):
+    X = np.array(X)
+    y = np.array(y)
+
+    mi_scores = mutual_info_classif(X, y, random_state=CONFIG["random_seed"])
+    indices_sorted = np.argsort(mi_scores)[::-1]
+    selected_indices = indices_sorted[:CONFIG["top_k_features"]]
+
+    mask = np.zeros(X.shape[1], dtype=bool)
+    mask[selected_indices] = True
+
+    return X[:, mask], mask
 
 
 if __name__ == "__main__":

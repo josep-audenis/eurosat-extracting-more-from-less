@@ -5,6 +5,9 @@ from models.train_classical_models import train_classic
 from features.extract_features import generate_features_dataset
 
 def main():
+
+    config = load_config()
+
     parser = argparse.ArgumentParser(prog="EuroSAT classifier")
     parser.add_argument("-t", "--train", action="store_true",help="Trains a classical model on the specified dataset.")
     parser.add_argument("-e", "--extract", action="store_true", help="Extracts specified featyres from the image dataset.")
@@ -19,7 +22,7 @@ def main():
     parser.add_argument("-eval", "--evaluate", type=str, help="Evaluates an existing trained model on a specified dataset.")
     parser.add_argument("-sr", "--split-ratio", type=int, help="Indicates the % of the dataset dedicated to training, the rest to test.", nargs=1)
     parser.add_argument("-cv", "--cross-validation", type=int, help="Indicates the number of folds for cross-validation", nargs=1)
-    parser.add_argument("-s", "--seed", type=int, help="Seed to fix a random state.", nargs=1)
+
 
     args = parser.parse_args()
 

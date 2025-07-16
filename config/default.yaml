@@ -1,0 +1,10 @@
+random_seed: 42
+top_k_features: 100
+remove_variance_threshold: 1e-10
+
+paths:
+  dataset_external_dir: "./data/external/EuroSAT/"
+  dataset_output_dir: "./data/interim/"
+  report_cross_val_output_dir: "./docs/reports/cross_validation/"
+  cross_val_report_template: "./docs/reports/cross_validation/cross_validation_template.tex"
+  report_figures_dir: "./docs/reports/figures/"
