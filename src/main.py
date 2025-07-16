@@ -1,13 +1,12 @@
 import argparse
 import os
 
+from config import CONFIG
 from models.train_classical_models import train_classic 
 from features.extract_features import generate_features_dataset
 
 def main():
-
-    config = load_config()
-
+    
     parser = argparse.ArgumentParser(prog="EuroSAT classifier")
     parser.add_argument("-t", "--train", action="store_true",help="Trains a classical model on the specified dataset.")
     parser.add_argument("-e", "--extract", action="store_true", help="Extracts specified featyres from the image dataset.")

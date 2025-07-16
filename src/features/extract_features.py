@@ -376,24 +376,25 @@ def generate_features_dataset(output_filename="features_train"):
             sys.stdout.write(f"\r{category.capitalize()} |{bar}| {percent:.2f}%")
             sys.stdout.flush()
         print()
+    print()
     
     print(f"Total features before cleaning: {len(X[0])}")
     X, mask = remove_nonovariant_features(X)
     X, mask_mutualinfo = select_features_mutual_info(X,y)
     np.savez(output_file, X=X, y=y)
-    print(f"Total features: {len(X[0])}")
+    print(f"Total features after cleaning: {len(X[0])}")
 
 
 def remove_nonovariant_features(X):
     X = np.array(X)
     variances = np.var(X, axis=0)
-    mask = variances > CONFIG["remove_variance_threshold"]
+    mask = variances > float(CONFIG["remove_variance_threshold"])
     removed = len(mask) - np.sum(mask)
     
     if removed > 0:
-        print(f"\nRemoved {removed} constant or near-constant feautres.")
+        print(f"Removed {removed} constant or near-constant feautres.")
     else:
-        print("\nNo constant or near-constant features detected")
+        print("No constant or near-constant features detected")
     
     return X[:, mask], mask
 
