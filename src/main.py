@@ -2,7 +2,7 @@ import argparse
 import os
 
 from config import CONFIG
-from models.train_classical_models import train_classic 
+from src.models.classical_models import train_classic 
 from features.extract_features import generate_features_dataset
 
 def main():

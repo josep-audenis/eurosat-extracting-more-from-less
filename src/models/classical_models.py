@@ -4,6 +4,8 @@ from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
+from xgboost import XGBClassifier
+
 from validations.cross_validation import cross_validate_model
 from reports.report_generator import generate_cross_validation_report
 
@@ -12,13 +14,19 @@ def load_features(feature_file):
     data = np.load(feature_file)
     return data['X'], data['y']
 
+
+
 def train_random_forest(X_train, y_train):
     rfc = RandomForestClassifier(random_state=42)
     rfc.fit(X_train, y_train)
     return rfc
 
 def train_xgboost(X_train, y_train):
-    return
+    xgb = XGBClassifier(objective="multi:softprob", random_state=42)
+    xgb.fit(X_train, y_train)
+    return xgb
+
+
 
 def train_classic(model_name="random_forest", train_ratio=None, cross_validation=None, dataset=None, model_filename="random_forest_model"):
     
@@ -55,8 +63,21 @@ if __name__ == "__main__":
     X, y = load_features("data/interim/features_train.npz")
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.25, random_state=42)
 
-    rfc = train_random_forest(X_train, y_train)
+    options = [1, 2]
 
-    y_pred = rfc.predict(X_val)
+    while(1):
+        option = input("Which model do you want to train:\n\t1. Random Forest Classifier\n\tXGBoost\n\n\tOption: ")
+        if option not in options:
+            print("Wrong option!")
+        else:
+            break
+     
 
-    dump(rfc, "models/classic_model.joblib")
+    if option == 1:
+        model = train_random_forest(X_train, y_train)
+    elif option == 2:
+        model = train_xgboost(X_train, y_train)
+
+    y_pred = model.predict(X_val)
+
+    dump(model, "models/classic_model.joblib")
