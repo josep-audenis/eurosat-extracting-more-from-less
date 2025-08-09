@@ -66,7 +66,7 @@ def generate_features_dataset(output_filename="features_train"):
         "frequency": input("Use frequency features? (y (default)/n): ").lower() in affirmative
     }
 
-    dataset_dir = "./data/external/EuroSAT/"
+    dataset_dir = "./data/raw/EuroSAT/"
 
     output_file = "./data/interim/" + output_filename + ".npz"
 
@@ -101,11 +101,12 @@ def generate_features_dataset(output_filename="features_train"):
     print()
     
     print(f"Total computed features: {len(X[0])}")
-    X, mask = remove_nonovariant_features(X)
+    X, mask_nonvariant = remove_nonovariant_features(X)
+    print(np.where(~mask_nonvariant)[0])
     X, mask_mutualinfo = select_features_mutual_info(X,y)
+    print(np.where(~mask_mutualinfo)[0])
     np.savez(output_file, X=X, y=y)
     print(f"Total features after cleaning: {len(X[0])}")
-
 
 def remove_nonovariant_features(X):
     X = np.array(X)
@@ -119,7 +120,6 @@ def remove_nonovariant_features(X):
         print("No constant or near-constant features detected")
     
     return X[:, mask], mask
-
 
 def select_features_mutual_info(X, y):
     X = np.array(X)
