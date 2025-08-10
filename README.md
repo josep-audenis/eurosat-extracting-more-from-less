@@ -28,6 +28,34 @@ As mentioned above the dataset is stored in this same repository using Git [LFS]
 python src/prepare_dataset.py
 ```
 
+If an EuorSAT dataset from another source is prefered, take into account that for executing further scripts and models the following dataset folder structure is expected:
+
+```bash
+eurosat-extracting-more-from-less/
+├── data/
+│   ├── external/
+│   │   └── ...
+│   ├── interim/
+│   │   └── ...
+│   └── raw/
+│       └── EuroSAT/
+│           ├── AnnualCrop/
+│           │   ├── AnnualCrop_1.jpg
+│           │   ├── AnnualCrop_2.jpg
+│           │   └── ...
+│           ├── Forest/
+│           │   ├── Forest_1.jpg
+│           │   ├── Forest_2.jpg
+│           │   └── ...
+│           ├── HerbaceousVegetation/
+│           │   └── ...
+│           └── ...
+│
+├── docs/
+│   └── ...
+└── ...
+```
+
 ## Execution
 
 For generating the feature dataset to train the classical models execute the ``exctract_features.py`` script using the following command:
