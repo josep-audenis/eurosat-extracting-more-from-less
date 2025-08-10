@@ -5,17 +5,19 @@ import sys
 
 from sklearn.feature_selection import mutual_info_classif
 
-from config import CONFIG
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-from statistical_features import extract_statistical_features
-from texture_features import extract_texture_glcm_features, extract_texture_measure_features
-from lbp_features import extract_lbp_features
-from gabor_filter_features import extract_gabor_filter_features
-from color_space_features import extract_color_space_features
-from spectral_features import extract_spectral_features
-from edge_features import extract_edge_features
-from morphological_features import extract_morphological_features
-from frequency_features import extract_frequency_features
+from src.config import CONFIG
+
+from src.features.statistical_features import extract_statistical_features
+from src.features.texture_features import extract_texture_glcm_features, extract_texture_measure_features
+from src.features.lbp_features import extract_lbp_features
+from src.features.gabor_filter_features import extract_gabor_filter_features
+from src.features.color_space_features import extract_color_space_features
+from src.features.spectral_features import extract_spectral_features
+from src.features.edge_features import extract_edge_features
+from src.features.morphological_features import extract_morphological_features
+from src.features.frequency_features import extract_frequency_features
 
 def extract_features(path, statistical=True, texture_glcm=True, texture_measure=True, lbp=True, gabor=True, color_space=True, spectral_features=True, edge_features=True, morphological=True, frequency=True):
     features = []
@@ -45,7 +47,7 @@ def extract_features(path, statistical=True, texture_glcm=True, texture_measure=
     return features 
 
 
-def generate_features_dataset(output_filename="features_train"):
+def generate_features_dataset():
 
     X = []
     y = []
@@ -66,6 +68,13 @@ def generate_features_dataset(output_filename="features_train"):
         "frequency": input("Use frequency features? (y (default)/n): ").lower() in affirmative
     }
 
+    output_filename = input("\nName of the dataset to generate (default \"features\"): ")
+
+    output_filename = output_filename.replace(" ", "_")
+
+    if output_filename == '':
+        output_filename = "features"
+
     dataset_dir = "./data/raw/EuroSAT/"
 
     output_file = "./data/interim/" + output_filename + ".npz"
@@ -84,7 +93,7 @@ def generate_features_dataset(output_filename="features_train"):
                                features_config["texture_glcm"], 
                                features_config["texture_measure"],
                                features_config["lbp"],
-                               features_config["gabor"],
+                               features_config["gabor"],        # WE ARE TESTING HERE (WE DID NOT FINISH THIS ONE)
                                features_config["color_space"],
                                features_config["spectral_features"],
                                features_config["edge_features"],
@@ -102,9 +111,11 @@ def generate_features_dataset(output_filename="features_train"):
     
     print(f"Total computed features: {len(X[0])}")
     X, mask_nonvariant = remove_nonovariant_features(X)
-    print(np.where(~mask_nonvariant)[0])
+    if len(np.where(~mask_nonvariant)[0]) != 0:
+        print(f"Indices of non variant features:\n{np.where(~mask_nonvariant)[0]}")
     X, mask_mutualinfo = select_features_mutual_info(X,y)
-    print(np.where(~mask_mutualinfo)[0])
+    if len(np.where(~mask_mutualinfo)[0]) != 0:
+        print(f"Indices of mutual information features (without non variant features removed previously):\n{np.where(~mask_mutualinfo)[0]}")
     np.savez(output_file, X=X, y=y)
     print(f"Total features after cleaning: {len(X[0])}")
 
@@ -136,4 +147,4 @@ def select_features_mutual_info(X, y):
 
 
 if __name__ == "__main__":
-    generate_features_dataset("features")
+    generate_features_dataset()

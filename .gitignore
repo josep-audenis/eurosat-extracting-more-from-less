@@ -2,6 +2,8 @@
 /data/interim/*
 EuroSAT/
 
+.venv/
+
 *template.tex
 
 *.tex

@@ -10,20 +10,30 @@ I have modified the folder structure of the original dataset (erased the interme
 
 ## Requirements
 
-For automatic report compilation the project must be executed in a linux environments with `texlive-latex-base` installed with:
+It's STRONGLY recommended to execute the project in Linux, the Python version used for the project is ``Python 3.11``. For installation of all dependencies in your environment execute the following command:
+
+```bash
+pip install -r requirements.txt
+```
+
+For automatic report compilation the project must be executed in a Linux environments with `texlive-latex-base` installed with:
 
 ```bash
 apt install texlive-latex-base
 ```
 
+As mentioned above the dataset is stored in this same repository using Git [LFS](https://git-lfs.com/), to verify that the file has been cloned correctly in your local repository is recommended to check the file format using the command ``file``. Once verified that the it has downloaded the Zip archive correctly, to extract all the content in the corresponding directory execute the ``prepare_dataset.py``script:
+
+```bash
+python src/prepare_dataset.py
+```
+
 ## Execution
 
-Extraction
+For generating the feature dataset to train the classical models execute the ``exctract_features.py`` script using the following command:
+
 ```bash
-python src/main.py -e -sd features_train_mask
+python src/features/extract_features.py
 ```
 
-Cross Validation
-```bash
-python src/main.py -t -m random_forest -cv 2 -ld features_train
-```
+This will generate a file named ``features.npz`` in the ``data/interim`` folder. If you want to generate different versions of a dataset please generate the dataset with different names, otherwise they will be overwritten.
