@@ -93,7 +93,7 @@ def generate_features_dataset():
                                features_config["texture_glcm"], 
                                features_config["texture_measure"],
                                features_config["lbp"],
-                               features_config["gabor"],        # WE ARE TESTING HERE (WE DID NOT FINISH THIS ONE)
+                               features_config["gabor"],        
                                features_config["color_space"],
                                features_config["spectral_features"],
                                features_config["edge_features"],

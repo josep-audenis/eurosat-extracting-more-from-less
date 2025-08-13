@@ -56,6 +56,8 @@ eurosat-extracting-more-from-less/
 └── ...
 ```
 
+For **GPU** functionalities [NVIDIA cuda toolkit 12.9](https://developer.nvidia.com/cuda-12-9-0-download-archive) was used. Take into account that ``cupy`` libary for gpu usage is dependent to de cuda toolkit. 
+
 ## Execution
 
 For generating the feature dataset to train the classical models execute the ``exctract_features.py`` script using the following command:

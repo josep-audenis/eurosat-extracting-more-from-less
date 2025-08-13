@@ -1,5 +1,5 @@
 random_seed: 42
-top_k_features: 100
+top_k_features: 500
 remove_variance_threshold: 1e-10
 
 paths:

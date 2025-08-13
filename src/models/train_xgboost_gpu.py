@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-from src.validations.cross_validation import cross_validate_xgb_gpu
+from src.validations.cross_validation_gpu import cross_validate_xgb_gpu
 from src.models.model_utils import load_features
 
 DATASET_PATH = os.path.join(os.path.dirname(__file__), "../..",  "data/interim/")
@@ -28,7 +28,7 @@ def train_xgboost_cv(dataset_name, n_splits=5):
         "objective": "multi:softprob",
         "num_class": len(np.unique(y_encoded)),
         "random_state": 42,
-        "device": "gpu"
+        "device": "cuda"
     }
     
     results, fold_metrics = cross_validate_xgb_gpu(X, y_encoded, params, n_splits=n_splits, random_seed=42)

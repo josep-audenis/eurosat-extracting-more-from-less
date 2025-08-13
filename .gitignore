@@ -1,8 +1,9 @@
-/data/external/EuroSAT/
 /data/interim/*
+/data/processed/*
 EuroSAT/
 
 .venv/
+
 
 *template.tex
 

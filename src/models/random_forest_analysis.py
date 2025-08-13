@@ -6,6 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
+from src.models.xgboost_params import XGBOOST_GRID
+
 DATASET_PATH = os.path.join(os.path.dirname(__file__), "../..",  "data/interim/")
 
 if __name__ == "__main__":
