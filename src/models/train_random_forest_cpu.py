@@ -36,13 +36,10 @@ def train_random_forest_cv(dataset_name, n_splits=5):
 
 if __name__ == "__main__":
     dataset_filename = input("What dataset would you like to use: ")
-    print(os.listdir(DATASET_PATH))
 
     if dataset_filename in os.listdir(DATASET_PATH):
-        print(".npz")
         train_random_forest_cv(dataset_filename)
     elif dataset_filename + ".npz" in os.listdir(DATASET_PATH):
-        print("no .npz")
         train_random_forest_cv(dataset_filename + ".npz")
         
     else:

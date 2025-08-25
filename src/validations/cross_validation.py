@@ -16,6 +16,8 @@ def cross_validate_cpu(X ,y, model, n_splits=5, random_seed=42):
     fold_metrics = []
 
     fold = 1
+
+    X = np.array(X)
     
     for train_idx, test_idx in skf.split(X,y):
         X_train, X_test = X[train_idx], X[test_idx]
