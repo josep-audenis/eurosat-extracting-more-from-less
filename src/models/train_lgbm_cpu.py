@@ -13,7 +13,7 @@ from src.models.model_utils import load_features
 DATASET_PATH = os.path.join(os.path.dirname(__file__), "../..",  "data/interim/")
 
 
-def train_lgbm_cv(dataset_name, n_splits=5):
+def train_lgbm_cv_cpu(dataset_name, n_splits=5):
 
 
     dataset_filename = DATASET_PATH + dataset_name
@@ -36,12 +36,16 @@ def train_lgbm_cv(dataset_name, n_splits=5):
 
 
 if __name__ == "__main__":
+    print("Available datasets:")
+    for dataset in os.listdir(DATASET_PATH):
+        print(f"- {dataset}")
+    
     dataset_filename = input("What dataset would you like to use: ")
 
     if dataset_filename in os.listdir(DATASET_PATH):
-        train_lgbm_cv(dataset_filename)
+        train_lgbm_cv_cpu(dataset_filename)
     elif dataset_filename + ".npz" in os.listdir(DATASET_PATH):
-        train_lgbm_cv(dataset_filename + ".npz")
+        train_lgbm_cv_cpu(dataset_filename + ".npz")
         
     else:
         print(f"No {dataset_filename} or {dataset_filename}.npz found in {DATASET_PATH}")

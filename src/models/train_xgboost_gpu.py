@@ -39,6 +39,10 @@ def train_xgboost_cv(dataset_name, n_splits=5):
 
 
 if __name__ == "__main__":
+    print("Available datasets:")
+    for dataset in os.listdir(DATASET_PATH):
+        print(f"- {dataset}")
+    
     dataset_filename = input("What dataset would you like to use: ")
 
     if dataset_filename in os.listdir(DATASET_PATH):

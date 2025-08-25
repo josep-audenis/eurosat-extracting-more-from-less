@@ -25,7 +25,10 @@ def train_random_forest_cv(dataset_name, n_splits=5):
     le = LabelEncoder()
     y_encoded = le.fit_transform(y)
 
-    model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
+    model = RandomForestClassifier(
+        n_estimators=100, 
+        random_state=42, 
+        n_jobs=-1)
 
     results, fold_metrics = cross_validate_cpu(X, y_encoded, model, n_splits=n_splits, random_seed=42)
 
@@ -35,6 +38,10 @@ def train_random_forest_cv(dataset_name, n_splits=5):
 
 
 if __name__ == "__main__":
+    print("Available datasets:")
+    for dataset in os.listdir(DATASET_PATH):
+        print(f"- {dataset}")
+    
     dataset_filename = input("What dataset would you like to use: ")
 
     if dataset_filename in os.listdir(DATASET_PATH):
