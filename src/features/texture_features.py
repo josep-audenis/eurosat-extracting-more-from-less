@@ -8,7 +8,7 @@ def extract_texture_glcm_features(image):
 
     features = []
 
-    distances = [1, 2, 3]
+    distances = [1, 2, 3, 4]
     angles = [0, np.pi/4, np.pi/2, 3*np.pi/4]
     levels = 32 
 
