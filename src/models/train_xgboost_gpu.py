@@ -91,12 +91,11 @@ if __name__ == "__main__":
 
     while option < 1 or option > 3:
 
-        option = input("\nWhat type of training do you want to do:" \
-        "1. Cross validation" \
-        "2. Single training" \
-        "3. Hyperparameter tunning" \
-        "" \
-        "\tOption:")
+        option = int (input("\nWhat type of training do you want to do:" \
+        "\n1. Cross validation" \
+        "\n2. Single training" \
+        "\n3. Hyperparameter tunning" \
+        "\n\nOption: "))
 
     if option == 1:
         train_xgboost_cv(dataset_filename)

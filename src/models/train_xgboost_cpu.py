@@ -1,16 +1,16 @@
 import sys
 import os
+
 import numpy as np
 
 from xgboost import XGBClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from src.validations.cross_validation import cross_validate_cpu
-from src.models.model_utils import load_features
+from src.models.model_utils import load_features, evaluate_model
 
 DATASET_PATH = os.path.join(os.path.dirname(__file__), "../..",  "data/interim/")
 
@@ -53,16 +53,20 @@ def train_xgboost_cpu(dataset_name, test_size=0.3):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=test_size, shuffle=True, stratify=y, random_state=42)
 
-    print(f"\nTraining XGBClassifier on CPU on dataset {dataset_name} using a test_size of {test_size*100}%.")
+    print(f"\nTraining XGBClassifier on CPU on dataset {dataset_name} using a test_size of {test_size*100}%.\n")
 
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+    accuracy, precision, recall, f1, train_time, mem_usage, model_size, emissions = evaluate_model(model, X_train, X_test, y_train, y_test)
 
-    print(f"\n=== XGBClassifier evaluation on {test_size*100}% test size ===")
-    print(f"Accuracy: {accuracy_score(y_test, y_pred)*100:.2f}%")
-    print(f"Precision (Macro): {precision_score(y_test, y_pred, average='macro')*100:.2f}%")
-    print(f"Recall (Macro): {recall_score(y_test, y_pred, average='macro')*100:.2f}%")
-    print(f"F1 Score (Macro): {f1_score(y_test, y_pred, average='macro')*100:.2f}%\n")
+    print(f"\n=== LGBMClassifier evaluation on {test_size*100}% test size ===")
+    print(f"Accuracy: {accuracy*100:.2f}%")
+    print(f"Precision (Macro): {precision*100:.2f}%")
+    print(f"Recall (Macro): {recall*100:.2f}%")
+    print(f"F1 Score (Macro): {f1*100:.2f}%")
+    print("\n--- Resource usage ---")
+    print(f"Training time: {train_time:.2f} sec")
+    print(f"Memory used: {mem_usage:.2f} MB")
+    print(f"Model size: {model_size:.2f} MB")
+    print(f"CO2 emissions: {emissions:.6f} kgCO2eq\n")
 
     return
 

@@ -3,7 +3,7 @@
 EuroSAT/
 
 .venv/
-
+emissions.csv
 
 *template.tex
 
