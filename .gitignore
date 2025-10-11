@@ -2,6 +2,8 @@
 /data/processed/*
 EuroSAT/
 
+emissions.csv
+
 .venv/
 emissions.csv
 

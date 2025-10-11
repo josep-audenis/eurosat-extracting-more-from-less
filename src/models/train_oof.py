@@ -29,7 +29,7 @@ def get_oof_preds(X, y, models, n_splits=5, random_state=42):
             y_train = y[train_idx]
 
             model.fit(X_train, y_train)
-            preds = model.predict_proba(X_val)  # shape: (val_size, n_classes)
+            preds = model.predict_proba(X_val) 
 
             print(f"{model} - {preds}")
 
